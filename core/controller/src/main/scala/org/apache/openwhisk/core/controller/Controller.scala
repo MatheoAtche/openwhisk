@@ -265,6 +265,7 @@ object Controller {
     val msgProvider = SpiLoader.get[MessagingProvider]
 
     Seq(
+      (topicPrefix + "scheduler", "scheduler", Some(ActivationEntityLimit.MAX_ACTIVATION_LIMIT)),
       (topicPrefix + "completed" + instance.asString, "completed", Some(ActivationEntityLimit.MAX_ACTIVATION_LIMIT)),
       (topicPrefix + "health", "health", None),
       (topicPrefix + "cacheInvalidation", "cache-invalidation", None),

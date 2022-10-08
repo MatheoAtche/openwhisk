@@ -173,8 +173,10 @@ class InvokerPool(childFactory: (ActorRefFactory, InvokerInstanceId) => ActorRef
     status = padToIndexed(
       status,
       instanceId.toInt + 1,
-      i => new InvokerHealth(InvokerInstanceId(i, userMemory = instanceId.userMemory), Offline))
-    status = status.updated(instanceId.toInt, new InvokerHealth(instanceId, Offline))
+//      i => new InvokerHealth(InvokerInstanceId(i, userMemory = instanceId.userMemory), Offline))
+//    status = status.updated(instanceId.toInt, new InvokerHealth(instanceId, Offline))
+      i => new InvokerHealth(InvokerInstanceId(i, userMemory = instanceId.userMemory), Healthy))
+    status = status.updated(instanceId.toInt, new InvokerHealth(instanceId, Healthy))
 
     val ref = childFactory(context, instanceId)
     ref ! SubscribeTransitionCallBack(self) // register for state change events
@@ -295,7 +297,10 @@ class InvokerActor(invokerInstance: InvokerInstanceId, controllerInstance: Contr
   }
 
   /** Always start UnHealthy. Then the invoker receives some test activations and becomes Healthy. */
-  startWith(Unhealthy, InvokerInfo(new RingBuffer[InvocationFinishedResult](InvokerActor.bufferSize)))
+//  startWith(Unhealthy, InvokerInfo(new RingBuffer[InvocationFinishedResult](InvokerActor.bufferSize)))
+  // Invoker's state are managed by new Scheduler component, so keep all invokers in Healthy state
+  //   from the point of view of the OW Controller
+  startWith(Healthy, InvokerInfo(new RingBuffer[InvocationFinishedResult](InvokerActor.bufferSize)))
 
   /** An Offline invoker represents an existing but broken invoker. This means, that it does not send pings anymore. */
   when(Offline) {
@@ -312,15 +317,15 @@ class InvokerActor(invokerInstance: InvokerInstanceId, controllerInstance: Contr
    * A Healthy invoker is characterized by continuously getting pings.
    * It will go offline if that state is not confirmed for 20 seconds.
    */
-  when(Healthy, stateTimeout = healthyTimeout) {
-    case Event(ping: PingMessage, _) => goOfflineIfDisabled(ping)
-    case Event(StateTimeout, _)      => goto(Offline)
-  }
+  // when(Healthy, stateTimeout = healthyTimeout) {
+  //   case Event(ping: PingMessage, _) => goOfflineIfDisabled(ping)
+  //   case Event(StateTimeout, _)      => goto(Offline)
+  // }
 
-  /** Handles the completion of an Activation in every state. */
-  whenUnhandled {
-    case Event(cm: InvocationFinishedMessage, info) => handleCompletionMessage(cm.result, info.buffer)
-  }
+  // /** Handles the completion of an Activation in every state. */
+  // whenUnhandled {
+  //   case Event(cm: InvocationFinishedMessage, info) => handleCompletionMessage(cm.result, info.buffer)
+  // }
 
   /** Logs transition changes. */
   onTransition {
