@@ -202,10 +202,10 @@ abstract class CommonLoadBalancer(config: WhiskConfig,
     // another option is to add required information in InvokerSupervision#invokeTestAction, but in order to modify
     //   minimum number of methods, here is performed a double check
     val newContent: Option[JsObject] = msg.content match {
-      case Some(value) => if (value.fields.contains("$scheduler")) {
-        Some(value)
+      case Some(value) => if (value.asJsObject.fields.contains("$scheduler")) {
+        Some(value.asJsObject)
       } else {
-        Some(JsObject(value.fields + ("$scheduler" -> scheduler)))
+        Some(JsObject(value.asJsObject.fields + ("$scheduler" -> scheduler)))
       }
       case _ => Some(JsObject("$scheduler" -> scheduler))
     }

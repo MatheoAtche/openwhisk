@@ -328,7 +328,7 @@ class ContainerProxy(factory: (TransactionId,
     val priorityKey = "priority"
     activation.content match {
       case Some(content) =>
-        content.getFields(schedulerKey) match {
+        content.asJsObject.getFields(schedulerKey) match {
           case Seq(scheduler) =>
             scheduler.asJsObject.getFields(priorityKey) match {
               case Seq(priority) => Some(priority.convertTo[Int])
