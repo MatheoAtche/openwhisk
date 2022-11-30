@@ -19,7 +19,7 @@
 
 This repository **extends** Apache OpenWhisk introducing a few mechanisms
 to support differentiated service classes. These mechanisms have been exploited
-to design a new scheduling system within OpenWhisk. It is a copy of Alfredo Milani work that you can find [here](https://alfredo-milani.github.io/openwhisk-scheduler/), but with an updated verion of Openwhisk. (The one used for my master's project [here](https://github.com/MatheoAtche/projet-maitrise-ets))
+to design a new scheduling system within OpenWhisk. It is a copy of Alfredo Milani work that you can find [here](https://alfredo-milani.github.io/openwhisk-scheduler/), but with an updated version of Openwhisk. (The one used for my master's project [here](https://github.com/MatheoAtche/projet-maitrise-ets)). I have not managed to make it run for now.
 
 # OpenWhisk
 
